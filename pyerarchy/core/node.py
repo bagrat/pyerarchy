@@ -6,7 +6,7 @@ __author__ = 'bagrat'
 
 
 class Node(object):
-    _name_exceptions = ['_pyerarchy_path']
+    _name_exceptions = ['_pyerarchy_path', '_pyerarchy_file_obj']
 
     def __init__(self, path, create=False, strict=False):
         """Creates node object to walk through filesystem using attributes.
@@ -35,6 +35,11 @@ class Node(object):
         """
         return os.path.isfile(self._pyerarchy_path)
 
+    def open(self, *args, **kwargs):
+        """Opens the node as a file
+        """
+        return open(self._pyerarchy_path, *args, **kwargs)
+
     def isdir(self):
         """Tells if the node is a directory
         """
@@ -48,7 +53,7 @@ class Node(object):
         :return:
         """
         if self.isfile():
-            raise NotDirectoryError('Cannot ls() on non-directory node')
+            raise NotDirectoryError('Cannot ls() on non-directory node: {path}'.format(path=self._pyerarchy_path))
 
         return os.listdir(self._pyerarchy_path)
 
@@ -64,7 +69,7 @@ class Node(object):
 
         if isinstance(children, (str, unicode)):
             if os.path.isabs(children):
-                raise BadValueError('Cannot mkdir an absolute path')
+                raise BadValueError('Cannot mkdir an absolute path: {path}'.format(path=self._pyerarchy_path))
 
             rel_path = os.path.join(self._pyerarchy_path, children)
             os.makedirs(rel_path, mode)
@@ -78,12 +83,21 @@ class Node(object):
         return result
 
     def __getattribute__(self, item):
+        """Attribute name resolution
+
+        Returns a child node with the name of the accessed attribute. Returns the attribute, if the name is listed in
+        _name_exceptions variable.
+        """
         if item in Node._name_exceptions:
             return super(Node, self).__getattribute__(item)
 
         return Node(os.path.join(self._pyerarchy_path, item))
 
     def __call__(self, *args, **kwargs):
+        """Invokes corresponding function
+
+        If the node is accessed as a callable and such function exists for the node, it is invoked.
+        """
         name = os.path.basename(self._pyerarchy_path)
 
         if not hasattr(Node, name):
