@@ -40,6 +40,12 @@ class Node(object):
         """
         return open(self._pyerarchy_path, *args, **kwargs)
 
+    def read(self, *args, **kwargs):
+        """Reads the node as a file
+        """
+        with self.open('r') as f:
+            return f.read(*args, **kwargs)
+
     def isdir(self):
         """Tells if the node is a directory
         """
@@ -109,5 +115,3 @@ class Node(object):
         function = getattr(Node, name)
 
         return function(node, *args, **kwargs)
-
-

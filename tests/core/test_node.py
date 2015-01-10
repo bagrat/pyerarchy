@@ -1,6 +1,7 @@
 from unittest import TestCase
 import shutil
-from pyerarchy.ex import NoSuchFunctionError
+from pyerarchy.ex import NoSuchFunctionError, NotDirectoryError, BadValueError
+from pyerarchy.modulenode import ModuleNode
 
 __author__ = 'bagrat'
 
@@ -11,10 +12,10 @@ from pyerarchy.core.node import Node
 
 
 class NodeTest(TestCase):
-
     folders = ['anotherdir', 'yetanother', 'isfilecase']
     files = ['file']
     static_path = os.path.join(os.path.dirname(__file__), 'static')
+    testfile_contents = 'testfilecontents'
 
     @classmethod
     def setUp(cls):
@@ -37,7 +38,7 @@ class NodeTest(TestCase):
     @classmethod
     def touch(cls, path):
         with open(os.path.join(cls.static_path, path), 'w') as f:
-            f.write("testfile")
+            f.write(cls.testfile_contents)
 
     @classmethod
     def tearDown(cls):
@@ -57,8 +58,15 @@ class NodeTest(TestCase):
 
         node = Node(os.path.join(self.static_path, 'file'))
 
+        raises_not_dir = False
+        try:
+            node.ls()
+        except NotDirectoryError:
+            raises_not_dir = True
+
         ok_(node.isfile())
         ok_(not node.isdir())
+        ok_(raises_not_dir)
 
         node = Node(os.path.join(self.static_path, 'yetanother'))
 
@@ -83,7 +91,7 @@ class NodeTest(TestCase):
 
         ok_(not os.path.exists(nonexisting))
 
-        node = Node(nonexisting, create=True)
+        Node(nonexisting, create=True)
 
         ok_(os.path.exists(nonexisting))
 
@@ -103,6 +111,14 @@ class NodeTest(TestCase):
 
         ok_(os.path.exists(os.path.join(child1._pyerarchy_path, 'out')))
         ok_(os.path.exists(os.path.join(child1._pyerarchy_path, 'there')))
+
+        raises_bad_value = False
+        try:
+            node.mkdir('/tmp/newdir')
+        except BadValueError:
+            raises_bad_value = True
+
+        ok_(raises_bad_value)
 
     def test_name_collisions(self):
         node = Node(self.static_path)
@@ -127,3 +143,10 @@ class NodeTest(TestCase):
             raises_no_such_function = True
 
         ok_(raises_no_such_function)
+
+    def test_file_ops(self):
+        node = Node(self.static_path)
+
+        contents = node.file.read()
+
+        eq_(contents, self.testfile_contents)
