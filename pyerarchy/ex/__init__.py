@@ -11,3 +11,7 @@ class NotDirectoryError(PyerarchyError):
 
 class BadValueError(PyerarchyError):
     pass
+
+
+class NoSuchFunctionError(PyerarchyError):
+    pass
