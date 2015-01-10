@@ -20,9 +20,9 @@ class Node(object):
 
         if not os.path.exists(p):
             if not create:
-                IOError('Path does not exist: %(path)'.format(path=p))
+                raise IOError('Path does not exist: %(path)'.format(path=p))
             else:
-                pass  # TODO: Create it
+                os.makedirs(p, mode=0o755)
 
         self.path = p
         self.isfile = os.path.isfile(p)
@@ -40,7 +40,7 @@ class Node(object):
 
         return os.listdir(self.path)
 
-    def mkdir(self, children, mode=0o0755):
+    def mkdir(self, children, mode=0o0755, return_node=True):
         """Creates child entities in directory.
 
         Raises exception if the object is a file.
@@ -48,13 +48,19 @@ class Node(object):
         :param children: The list of children to be created.
         :return: The child object, if one child is provided. None, otherwise.
         """
-        for child in children:
-            if os.path.isabs(child):
-                raise BadValueError('Cannot mkdir an absolute path')
-            os.makedirs(child, mode)
-
         result = None
-        if len(children) == 1:
-            result = Node(os.path.join(self.path, children[0]))
+
+        if isinstance(children, (str, unicode)):
+            if os.path.isabs(children):
+                raise BadValueError('Cannot mkdir an absolute path')
+
+            rel_path = os.path.join(self.path, children)
+            os.makedirs(rel_path, mode)
+
+            if return_node:
+                result = Node(rel_path)
+        else:
+            for child in children:
+                self.mkdir(child, mode, False)
 
         return result
