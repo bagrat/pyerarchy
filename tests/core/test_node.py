@@ -13,14 +13,26 @@ def test_node():
 
     ok_(node.isdir)
     ok_(not node.isfile)
-    ok_(len(ls) == 2)
+    ok_(len(ls) == 4)
     ok_('file' in ls)
     ok_('anotherdir' in ls)
+    ok_('yetanother' in ls)
+    ok_('isfilecase' in ls)
 
     node = Node(os.path.join(os.path.dirname(__file__), 'static/file'))
 
     ok_(node.isfile)
     ok_(not node.isdir)
+
+    node = Node(os.path.join(os.path.dirname(__file__), 'static/yetanother'))
+
+    ok_(node.isdir)
+    ok_(not node.isfile)
+
+    node = Node(os.path.join(os.path.dirname(__file__), 'static/isfilecase'))
+
+    ok_(node.isdir)
+    ok_(not node.isfile)
 
     raises_not_exists = False
     try:
