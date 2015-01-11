@@ -3,7 +3,7 @@ import shutil
 from unittest import TestCase
 from nose.tools import eq_, ok_
 from pyerarchy.ex import BadValueError
-from pyerarchy.modulenode import ModuleNode
+from pyerarchy.modulenode import ModuleNode, ThisModuleNode
 
 __author__ = 'bagrat'
 
@@ -41,3 +41,8 @@ class ModuleNodeTest(TestCase):
             raises_bad_value = True
 
         ok_(raises_bad_value)
+
+    def test_this_module(self):
+        this = ThisModuleNode()
+
+        eq_(this._pyerarchy_path, __file__)

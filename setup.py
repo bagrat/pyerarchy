@@ -34,4 +34,4 @@ config = {
     'keywords': 'directory file object'
 }
 
-setup(**config)
+setup(**config, requires=['pyflect'])
