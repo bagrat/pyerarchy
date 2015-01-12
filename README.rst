@@ -9,7 +9,7 @@ and nice.
 Basic Usage
 -----------
 
-The central point of Pyerarchy is the Node. The basic usage starts by initializing and entry point Node and manipulating
+The central point of Pyerarchy is the Node. The basic usage starts by initializing an entry point Node and manipulating
 it further::
 
     node = Node('entry/point/path')  # Initialize a new node
@@ -28,7 +28,7 @@ it further::
     myfile = node.myfile.open('w')
 
     # Or...
-    content = node.myfile.read()  # ...which handles everything
+    contents = node.myfile.read()  # ...which handles everything
 
     # What if the filename contains a dot, dash, etc?
     # Well...
@@ -37,8 +37,15 @@ it further::
     # And then do your stuff on myfile_node
     with myfile_node.open('r') as f:
         ...
-        
-    # Or again...
-    content = myfile_node.read()
 
+    # Or again...
+    contents = myfile_node.read()
+
+Another useful feature of Pyerarchy is very handy in Python modules to interact with static files included in the module::
+
+    static_data_node = ThisModuleNode()/'path/to/the/static/data/relative/to/module'
+
+    some_file_node = static_data_node/'some/static/text/file'
+
+    contents = some_file_node.read()
 
