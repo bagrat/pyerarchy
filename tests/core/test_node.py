@@ -46,8 +46,18 @@ class NodeTest(TestCase):
 
         shutil.rmtree(cls.static_path)
 
+    def test_attribute(self):
+        node = Node(self.static_path)
+
+        ok_(node)
+
+        attr_value = 'somevalue'
+        node.attr = attr_value
+
+        eq_(node.attr, attr_value)
+
     def test_node(self):
-        node = Node(os.path.join(os.path.dirname(__file__), 'static'))
+        node = Node(self.static_path)
 
         ls = node.ls()
 

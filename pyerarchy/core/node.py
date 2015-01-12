@@ -1,3 +1,4 @@
+import inspect
 import os
 
 from pyerarchy.ex import NotDirectoryError, BadValueError, NoSuchFunctionError
@@ -6,8 +7,6 @@ __author__ = 'bagrat'
 
 
 class Node(object):
-    _name_exceptions = ['_pyerarchy_path', '_pyerarchy_file_obj', '_extend_name_exceptions']
-
     def __init__(self, path, create=False, strict=False):
         """Creates node object to walk through filesystem using attributes.
 
@@ -91,13 +90,18 @@ class Node(object):
     def __getattribute__(self, item):
         """Attribute name resolution
 
-        Returns a child node with the name of the accessed attribute. Returns the attribute, if the name is listed in
-        _name_exceptions variable.
+        Returns a child node with the name of the accessed attribute. If the object has an attribute with such a name
+         return the attribute value.
         """
-        if item.startswith('__') or item in Node._name_exceptions:
-            return super(Node, self).__getattribute__(item)
+        result = None
+        try:
+            attr = super(Node, self).__getattribute__(item)
+            if not inspect.isroutine(attr):
+                result = attr
+        except AttributeError:
+            result = Node(os.path.join(self._pyerarchy_path, item))
 
-        return Node(os.path.join(self._pyerarchy_path, item))
+        return result
 
     def __call__(self, *args, **kwargs):
         """Invokes corresponding function
@@ -117,6 +121,11 @@ class Node(object):
         return function(node, *args, **kwargs)
 
     def __div__(self, other):
+        """Division acts as a path separator
+
+        :param other: The child entity name as a string
+        :return: Child node with the provided name
+        """
         if not isinstance(other, (str, unicode)):
             raise TypeError('Wrong type used with slash operation: {type}'.format(type=type(other)))
 
