@@ -19,12 +19,12 @@ classifiers = ['License :: OSI Approved :: MIT License',
                'Topic :: Software Development :: Libraries :: Python Modules']
 
 config = {
-    'description': 'Access directories like objects',
+    'description': 'Access file system using objects',
     'author': 'Bagrat Aznauryan',
     'url': 'git@github.com:n9code/pyerarchy.git',
     'download_url': 'git@github.com:n9code/pyerarchy.git',
     'author_email': 'bagrat@aznauryan.org',
-    'version': '0.0',
+    'version': '0.1',
     'install_requires': install_requires,
     'tests_require': tests_require,
     'classifiers': classifiers,

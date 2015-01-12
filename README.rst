@@ -46,6 +46,5 @@ Another useful feature of Pyerarchy is very handy in Python modules to interact 
     static_data_node = ThisModuleNode()/'path/to/the/static/data/relative/to/module'
 
     some_file_node = static_data_node/'some/static/text/file'
-
     contents = some_file_node.read()
 

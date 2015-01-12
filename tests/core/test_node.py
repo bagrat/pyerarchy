@@ -186,3 +186,12 @@ class NodeTest(TestCase):
         ok_(isinstance(newdir_node, Node))
         ok_(newdir_node.isdir())
         eq_(newdir_node._pyerarchy_path, os.path.join(child._pyerarchy_path, newdir_name))
+
+    def test_iter(self):
+        node = Node(self.static_path)
+
+        result = []
+        for child in node:
+            result.append(child.name())  # os.path.basename(child._pyerarchy_path))
+
+        eq_(len(set(self.folders + self.files).symmetric_difference(set(result))), 0)

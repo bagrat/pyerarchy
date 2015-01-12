@@ -1,5 +1,6 @@
 import inspect
 import os
+from pyerarchy.core.iter import NodeIterator
 
 from pyerarchy.ex import NotDirectoryError, BadValueError, NoSuchFunctionError
 
@@ -62,6 +63,15 @@ class Node(object):
 
         return os.listdir(self._pyerarchy_path)
 
+    def children(self):
+        ls = self.ls()
+
+        result = []
+        for child_name in ls:
+            result.append(self/child_name)
+
+        return result
+
     def mkdir(self, children, mode=0o0755, return_node=True):
         """Creates child entities in directory.
 
@@ -93,11 +103,12 @@ class Node(object):
         Returns a child node with the name of the accessed attribute. If the object has an attribute with such a name
          return the attribute value.
         """
-        result = None
         try:
             attr = super(Node, self).__getattribute__(item)
             if not inspect.isroutine(attr):
                 result = attr
+            else:
+                raise AttributeError()
         except AttributeError:
             result = Node(os.path.join(self._pyerarchy_path, item))
 
@@ -130,3 +141,19 @@ class Node(object):
             raise TypeError('Wrong type used with slash operation: {type}'.format(type=type(other)))
 
         return getattr(self, other)
+
+    def __iter__(self):
+        """Return iterator to iterate over child entities of the node
+        """
+        return NodeIterator(self)
+
+    def name(self):
+        """Returns the basename of the node
+        """
+        return os.path.basename(self._pyerarchy_path)
+
+    def __repr__(self):
+        return self.name()
+
+    def __str__(self):
+        return self.__repr__()
