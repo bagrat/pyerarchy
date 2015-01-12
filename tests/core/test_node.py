@@ -150,3 +150,29 @@ class NodeTest(TestCase):
         contents = node.file.read()
 
         eq_(contents, self.testfile_contents)
+
+    def test_div(self):
+        node = Node(self.static_path)
+
+        child = node/self.folders[0]
+
+        ok_(isinstance(child, Node))
+        ok_(child.isdir())
+        eq_(child._pyerarchy_path, os.path.join(node._pyerarchy_path, self.folders[0]))
+
+        raises_type_error = False
+        try:
+            node/node
+        except TypeError:
+            raises_type_error = True
+
+        ok_(raises_type_error)
+
+        newdir_name = 'newdir'
+        child.mkdir(newdir_name)
+
+        newdir_node = node / self.folders[0] / newdir_name
+
+        ok_(isinstance(newdir_node, Node))
+        ok_(newdir_node.isdir())
+        eq_(newdir_node._pyerarchy_path, os.path.join(child._pyerarchy_path, newdir_name))

@@ -6,7 +6,7 @@ __author__ = 'bagrat'
 
 
 class Node(object):
-    _name_exceptions = ['_pyerarchy_path', '_pyerarchy_file_obj']
+    _name_exceptions = ['_pyerarchy_path', '_pyerarchy_file_obj', '_extend_name_exceptions']
 
     def __init__(self, path, create=False, strict=False):
         """Creates node object to walk through filesystem using attributes.
@@ -94,7 +94,7 @@ class Node(object):
         Returns a child node with the name of the accessed attribute. Returns the attribute, if the name is listed in
         _name_exceptions variable.
         """
-        if item in Node._name_exceptions:
+        if item.startswith('__') or item in Node._name_exceptions:
             return super(Node, self).__getattribute__(item)
 
         return Node(os.path.join(self._pyerarchy_path, item))
@@ -115,3 +115,9 @@ class Node(object):
         function = getattr(Node, name)
 
         return function(node, *args, **kwargs)
+
+    def __div__(self, other):
+        if not isinstance(other, (str, unicode)):
+            raise TypeError('Wrong type used with slash operation: {type}'.format(type=type(other)))
+
+        return getattr(self, other)

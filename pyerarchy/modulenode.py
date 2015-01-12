@@ -10,6 +10,7 @@ __author__ = 'bagrat'
 
 
 class ModuleNode(Node):
+
     def __init__(self, module='', depth=1):
         """Initializes a node by module name or module object.
 
