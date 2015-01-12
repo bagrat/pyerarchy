@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pyerarchy by n9code</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Pyerarchy</h1>
+        <p>Access directories like objects</p>
+
+        <p class="view"><a href="https://github.com/n9code/pyerarchy">View the Project on GitHub <small>n9code/pyerarchy</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/n9code/pyerarchy/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/n9code/pyerarchy/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/n9code/pyerarchy">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="pyerarchy" class="anchor" href="#pyerarchy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pyerarchy</h1>
+
+<p>Pyerarchy is a Python package for easy file system surfing and manipulation. It enables to interact with the file system
+directly as Python objects without making implicit calls to <code>os</code> package. Finally it makes the code much more readable
+and nice.</p>
+
+<h2>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h2>
+
+<p>The central point of Pyerarchy is the Node. The basic usage starts by initializing an entry point Node and manipulating
+it further::</p>
+
+<pre><code>node = Node('entry/point/path')  # Initialize a new node
+
+children = node.ls()  # List all child entities of the node
+node.mkdir('newdir').mkdir('anotherdir')  # Create a new directory under node, and another one under the new one :)
+
+# Now access the newly created directories
+anotherdir = node/'newdir'/'anotherdir'  # This is the most common way to access nodes
+children = node.newdir.anotherdir.ls()  # This method can be used to invoke an operation on the result node
+
+# What about files?
+myfile = node.myfile
+
+# And even...
+myfile = node.myfile.open('w')
+
+# Or...
+contents = node.myfile.read()  # ...which handles everything
+
+# What if the filename contains a dot, dash, etc?
+# Well...
+myfile_node = node/'filename.with.dots-and-dashes'
+
+# And then do your stuff on myfile_node
+with myfile_node.open('r') as f:
+    ...
+
+# Or again...
+contents = myfile_node.read()
+</code></pre>
+
+<p>Another useful feature of Pyerarchy is very handy in Python modules to interact with static files included in the module::</p>
+
+<pre><code>static_data_node = ThisModuleNode()/'path/to/the/static/data/relative/to/module'
+
+some_file_node = static_data_node/'some/static/text/file'
+
+contents = some_file_node.read()
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/n9code">n9code</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
