@@ -41,6 +41,11 @@ it further::
     # Or again...
     contents = myfile_node.read()
 
+    # And finally, just iterate...
+    for child in node
+        # The child is also a Node object
+        ...
+
 Another useful feature of Pyerarchy is very handy in Python modules to interact with static files included in the module::
 
     static_data_node = ThisModuleNode()/'path/to/the/static/data/relative/to/module'
